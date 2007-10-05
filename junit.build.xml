@@ -1,0 +1,41 @@
+<project name="junit" default="junit">
+  <description>
+    Runs junit on system, using tests in classes whose names start with Test*.
+    Invocation: ant -f junit.build.xml
+  </description>
+
+  <import file="build.xml" />
+  <property name="junit.dir" location="${build.dir}/junit" />
+  <property name="junit.haltonfailure" value="false" />
+
+  <target name="junit"
+          depends="junit.tool, junit.report"
+          description="Runs JUnit, JunitReport" />
+
+  <target name="junit.tool" depends="compile" description="Run JUnit tests.">
+    <mkdir dir="${junit.dir}" />
+    <!-- Run the tests, which are all classes whose name starts with 'Test'. -->
+    <junit printsummary="withOutAndErr" haltonfailure="${junit.haltonfailure}">
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+        <path refid="compile.classpath" />
+      </classpath>
+      <formatter type="xml" />
+      <batchtest todir="${junit.dir}">
+        <fileset dir="${src.dir}" includes="**/Test*.java" />
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="junit.report" description="Generates an HTML report for JUnit.">
+    <taskdef name="junitreport"
+             classname="org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator" />
+    <junitreport todir="${junit.dir}">
+      <fileset dir="${junit.dir}" includes="TEST-*.xml" />
+      <report format="frames" todir="${junit.dir}" />
+    </junitreport>
+  </target>
+</project>
+
+
+
