@@ -1,0 +1,52 @@
+<project name="pmd" default="pmd">
+  <description>
+    Runs pmd on system, using rules in: lib/pmd/pmd.rulesets.xml
+    Invocation: ant -f pmd.build.xml
+  </description>
+
+  <property environment="env" />
+  <import file="build.xml" />
+  <property name="pmd.version" value="4.0" />
+  <property name="pmd.jar" value="pmd-${pmd.version}.jar" />
+  <property name="pmd.dir" location="${build.dir}/pmd" />
+  <property name="pmd.failonerror" value="false" />
+
+  <target name="pmd"
+          depends="pmd.tool, pmd.report"
+          description="Runs the PMD tool, report" />
+
+  <target name="pmd.tool"
+          description="Runs PMD over the source code to check for problems.">
+    <!-- Fail this target if PMD is not installed. -->
+    <available file="${env.PMD_HOME}/lib/${pmd.jar}" property="pmd.available" />
+    <fail unless="pmd.available"
+          message="Error: PMD_HOME not set or ${pmd.jar} not found." />
+    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+      <classpath>
+        <fileset dir="${env.PMD_HOME}/lib" includes="*.jar" />
+      </classpath>
+    </taskdef>
+
+    <!-- Run PMD -->
+    <mkdir dir="${pmd.dir}" />
+    <pmd rulesetfiles="${basedir}/lib/pmd/pmd.rulesets.xml"
+         shortFilenames="true"
+         targetjdk="1.5"
+         failuresPropertyName="pmd.failure.count"
+         failonerror="${pmd.failonerror}"
+         failOnRuleViolation="${pmd.failonerror}">
+      <formatter type="xml" toFile="${pmd.dir}/pmd.xml" />
+      <fileset dir="${src.dir}" includes="**/*.java" />
+    </pmd>
+    <echo message="PMD found ${pmd.failure.count} problem(s)." />
+  </target>
+
+  <target name="pmd.report"
+          description="Generates HTML reports on the PMD output.">
+    <xslt in="${pmd.dir}/pmd.xml"
+          style="${env.PMD_HOME}/etc/xslt/pmd-report-per-class.xslt"
+          out="${pmd.dir}/pmd-report-per-class.html" />
+  </target>
+
+</project>
+

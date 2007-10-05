@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>README</title>
+  </head>
+
+  <body>
+<center>
+<h1> ReadMe</h1>
+<A HREF="mailto:johnson@hawaii.edu">Philip Johnson</A> <br>
+<A HREF="http://csdl.ics.hawaii.edu/">Collaborative Software Development Laboratory</A><br>
+<A HREF="http://www.hawaii.edu/">University of Hawaii<br>
+</A>
+<p>
+</center>
+
+This file introduces you to the
+major components of this software package. It includes information on the
+contents of the package you have downloaded, instructions on how to install the
+system, basic invocation and usage, user documentation, developer documentation,
+and contact coordinates for further information.</p>
+
+
+<h2>A. Contents of this package</h2>
+<table width="735" border="1">
+<tr><th align="center" valign="top" width="93">Directory/File <th valign="top" width="626">Contents
+<tr><td align="center" valign="top" width="93">.
+    <td valign="top" width="626"> Top-level directory files include::
+    <ul>
+    <li> README.html (this document)
+    <li> build.xml (contains basic build targets and property definitions)
+    <li> checkstyle.build.xml (runs checkstyle)
+    <li> dist.build.xml (creates a distribution package)
+    <li> findbugs.build.xml (runs findbugs)
+    <li> javadoc.build.xml (runs javadoc)
+    <li> junit.build.xml (runs junit)
+    <li> pmd.build.xml (runs pmd)
+    <li> sclc.build.xml (runs sclc)
+    </ul>
+
+<tr><td align="center" valign="top" width="93">./lib
+    <td valign="top" width="626">Contains data files used to build and/or run the system:
+      <ul>
+        <li>checkstyle/checkstyle.modules.xml&nbsp;&nbsp; contains checkstyle
+          customizations.</li>
+        <li>pmd/pmd.rulesets.xml contains pmd customizations</li>
+        <li>findbugs/findbugs.rulesets.xml contains findbugs customizations.</li>
+      </ul>
+<tr>
+  <td align="center" valign="top" width="93">./doc
+    <td valign="top" width="626">Contains developer documentation including:
+      <ul>
+        <li><a href="doc/LicenseInfo.html">LicenseInfo.html</a> provides
+          licenses for use of all software included with this system.</li>
+        <li><a href="doc/History.html">History.html</a> provides a chronological
+          record of the releases of this system.</li>
+      </ul>
+</tr>
+
+<tr><td align="center" valign="top" width="93">./src
+    <td valign="top" width="626">Contains the source files.
+
+<tr><td align="center" valign="top" width="93">./build
+    <td valign="top" width="626">Contains various products of the build process, including:
+      <ul>
+        <li>javadoc/: Contains javadoc API information.</li>
+        <li>locc/: Contains size data on the
+          system, created by 'ant locc'</li>
+        <li>junit/: Contains
+          output from the JUnit tests, created by 'ant test'</li>
+        <li>java2html:/ Contains HTML
+          version of the source code, created by 'ant j2h'</li>
+        <li>dist/ Contains any distributions built
+          during development.</li>
+      </ul>
+      <p>These links won't work until their corresponding ant target has been
+      executed.
+
+</table>
+
+<h2>B. Basic Installation</h2>
+
+<p>These instructions assume that you have unzipped the zip file containing this
+system to create a directory containing the system components. A note to Unix
+users: due to a bug in java.util.zip, the directory permissions are munged if you unzip in Unix, and you won't be able to cd into
+interior directories.&nbsp; To fix this, invoke the following from the parent
+directory of this system: chmod -R a+x &lt;system directory&gt;.&nbsp;</p>
+
+<ol>
+  <li><b>Download and install the Java JDK version 1.5 or above.&nbsp;&nbsp;</b></li>
+  <ul>
+  <li>The canonical site for obtaining Java JDKs is <a href="http://java.sun.com/">http://java.sun.com/</a>.<br>
+    &nbsp;&nbsp;
+  </ul>
+  <li><b>Set the JAVA_HOME environment variable and add Java to your PATH.&nbsp;</b></li>
+  <ul>
+  <li>The procedure for setting environment variables is different on Windows,
+    Mac, and Unix; consult your sysadmin or google if you do not know how to set
+    environment variables.&nbsp;
+  <li>An example value for JAVA_HOME on a windows environment is: <a href="file:///c:/java/jdk1.5.0_08">c:\java\jdk1.5.0_08</a>.
+  <li>Add JAVA_HOME/bin to your PATH&nbsp;<br>
+    &nbsp;&nbsp;
+  </ul>
+
+  <li><b>Download and install Ant 1.7.0 or above.</b></li>
+  <ul>
+    <li> The canonical site for obtaining Ant is <a href="http://ant.apache.org/">http://ant.apache.org/</a>.&nbsp;<br>
+      &nbsp;
+  </ul>
+  <li><b>Set the ANT_HOME environment variable and add ANT to your PATH.</b>
+  <ul>
+  <li>
+  Define the ANT_HOME environment variable An example value is
+  c:\apache-ant-1.7.0;
+  <li>
+  Add the &lt;ANT_HOME&gt;/bin directory to your PATH variable.&nbsp; For
+  details, see the Ant installation instructions.<br>
+  </ul>
+
+
+  <li><b>Invoke 'ant' with no arguments to perform the default build of the
+    system.</b>
+  <ul>
+  <li> This command compiles the system and builds the jar file.
+  <li> Here is example output from successful invocation of the 'ant' command:<pre>C:\svn-csdl\stack&gt;ant
+Buildfile: build.xml
+
+compile:
+    [mkdir] Created dir: C:\svn-csdl\stack\build\classes
+    [javac] Compiling 5 source files to C:\svn-csdl\stack\build\classes
+
+jar:
+    [mkdir] Created dir: C:\svn-csdl\stack\build\jar
+      [jar] Building jar: C:\svn-csdl\stack\build\jar\stack.jar
+
+BUILD SUCCESSFUL
+Total time: 1 second
+C:\svn-csdl\stack&gt;
+  </pre>
+  </ul>
+
+  <li> <b> The stack.jar file is now ready for use in your applications in the
+    build/jar directory.</b>
+  <ul>
+  <li>
+  You can include this on your classpath, or drop it into the java/lib/ext
+  directory to make it available in all applications.
+  </ul>
+</ol>
+
+<h2>C. Invocation</h2>
+
+To use the stack system, you employ the edu.hawaii.stack.Stack class in your own
+code.&nbsp;
+  <h2>D. User documentation</h2>
+  <p>User-level documentation for this package is not available. The stack
+  system is intended for developer use only.</p>
+
+
+<h2>E. Developer documentation</h2>
+
+<p>This distribution includes Eclipse project definition files. In addition, it
+includes the following developer build files and targets. For the external tools
+(Checkstyle, PMD, FindBugs, JUnit, SCLC), you must download them from their home
+pages, unzip them, and then set an environment variable (CHECKSTYLE_HOME,
+PMD_HOME, etc.) to point to this directory.&nbsp;</p>
+
+<table border="1" width="100%">
+  <tr>
+    <td width="22%" valign="top">checkstyle.build.xml
+      <p>Requires: checkstyle 4.3</td>
+    <td width="78%" valign="top">Runs <a href="http://checkstyle.sourceforge.net/">Checkstyle</a>
+      on the system, using rules in lib/checkstyle/checkstyle.modules.xml
+      <p>Invocation: ant -f checkstyle.build.xml</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">junit.build.xml
+      <p>Requires: JUnit 4.4</td>
+    <td width="78%" valign="top">Runs <a href="http://www.junit.org/">JUnit</a>
+      on the system, using Test case code in src/**/Test*.java.
+      <p>Invocation: ant -f junit.build.xml</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">javadoc.build.xml
+      <p>&nbsp;</td>
+    <td width="78%" valign="top">Runs JavaDoc on the system.&nbsp;
+      <p>Invocation: ant -f javadoc.build.xml</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">findbugs.build.xml
+      <p>Requires: FindBugs 1.2.0</td>
+    <td width="78%" valign="top">Runs <a href="http://findbugs.sourceforge.net/">FindBugs</a>
+      on the system, using rules in lib/findbugs/findbugs.filter.xml
+      <p>Invocation: ant -f findbugs.build.xml</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">pmd.build.xml
+      <p>Requires: PMD 4.0</td>
+    <td width="78%" valign="top">Runs <a href="http://pmd.sourceforge.net/">PMD</a>
+      on the system, using rules in lib/pmd/pmd.rulesets.xml
+      <p>Invocation: ant -f pmd.build.xml</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">sclc.build.xml
+      <p>Requires: SCLC 2.5.525</td>
+    <td width="78%" valign="top">Runs <a href="http://csdl.ics.hawaii.edu/Tools/SCLC/">SCLC</a>
+      on the system.
+      <p>Invocation: ant -f sclc.build.xml</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">dist.build.xml</td>
+    <td width="78%" valign="top">Creates a distribution zip file for this
+      system.
+      <p>&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="22%" valign="top">verify.build.xml</td>
+    <td width="78%" valign="top">Runs JUnit, PMD, FindBugs, Checkstyle, and
+      JavaDoc on system, failing build if any errors are found.&nbsp;</td>
+  </tr>
+</table>
+  <h2>F. Contact information</h2>
+  <p>If you would like to know more about this software, or would like to be
+  informed of future releases:</p>
+  <ul>
+    <li><b>Home page</b>:&nbsp; <a href="http://csdl.ics.hawaii.edu/~johnson/413f06">http://csdl.ics.hawaii.edu/~johnson/413f06</a></li>
+    <li><b>Developer contact:</b> Philip Johnson <a href="mailto:(johnson@hawaii.edu">(johnson@hawaii.edu</a>)</li>
+    <li><b>Configuration management repository:</b> not available.</li>
+    <li><b>Developer and user mailing lists:</b> not available.</li>
+  </ul>
+<pre>&nbsp;</pre>
+
+</body>
+</html>

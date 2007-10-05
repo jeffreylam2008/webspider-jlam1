@@ -1,0 +1,130 @@
+<project name="stack" default="jar">
+  <description>
+  The basic build file for the Stack system. 
+  Invocation: ant
+  </description>
+
+  <!-- Always make environment variables available with the "env." prefix. -->
+  <property environment="env" />
+
+  <!-- Make sure we're running a Java 5 or better. -->
+  <condition property="java.5.available">
+    <or>
+      <contains string="${java.version}" substring="1.5" />
+      <contains string="${java.version}" substring="1.6" />
+    </or>
+  </condition>
+  <fail message="This package requires Java 5 or 6."
+        unless="java.5.available" />
+
+  <!-- Make sure we're running Ant 1.7 . -->
+  <condition property="ant.1.7.available">
+    <contains string="${ant.version}" substring="1.7" />
+  </condition>
+  <fail message="This package requires Ant 1.7." unless="ant.1.7.available" />
+
+  <!-- Make sure that a compatible version of JUnit is installed. -->
+  <!-- You can override the version. For example: 'ant -Djunit.version=4.1 -f junit.build.xml' -->
+  <property name="junit.version" value="4.4" />
+  <property name="junit.jar"
+            location="${env.JUNIT_HOME}/junit-${junit.version}.jar" />
+  <available file="${junit.jar}" type="file" property="junit.available" />
+  <fail message="This package requires JUNIT_HOME to be defined and ${junit.jar} available"
+        unless="junit.available" />
+
+  <!-- Make sure that a compatible version of HttpUnit is installed. -->
+  <property name="httpunit.version" value="1.6.2" />
+  <property name="httpunit.jar"
+            location="${env.HTTPUNIT_HOME}/lib/httpunit.jar" />
+  <available file="${httpunit.jar}" type="file" property="httpunit.available" />
+  <fail message="This package requires HTTPUNIT_HOME to be defined and ${httpunit.jar} available"
+        unless="httpunit.available" />
+
+  <!-- Basic properties for this system. -->
+  <property name="system.name" value="webspider-jlam1" />
+  <property name="majorVersionNumber" value="1" />
+  <property name="minorVersionNumber" value="0" />
+  <tstamp>
+    <format property="DAYSTAMP" pattern="Mdd" />
+  </tstamp>
+  <property name="version"
+            value="${majorVersionNumber}.${minorVersionNumber}.${DAYSTAMP}" />
+
+  <!-- Basic directory structure. -->
+  <property name="src.dir" location="${basedir}/src" />
+  <property name="lib.dir" location="${basedir}/lib" />
+  <property name="build.dir" location="${basedir}/build" />
+  <property name="tmp.dir" location="${basedir}/tmp" />
+
+  <!-- The compile classpath is useful to many tools. -->
+  <path id="compile.classpath">
+    <fileset dir="${env.HTTPUNIT_HOME}/jars">
+      <include name="*.jar" />
+      <exclude name="nekohtml.jar" if="use.jtidy" />
+    </fileset>
+    <fileset file="${httpunit.jar}" />
+  </path>
+
+  <target name="compile" description="Compiles the code.">
+    <!-- Now compile the code into build/classes -->
+    <mkdir dir="${build.dir}/classes" />
+    <javac srcdir="${src.dir}"
+           destdir="${build.dir}/classes"
+           debug="on"
+           includeAntRuntime="no">
+      <classpath refid="compile.classpath" />
+      <compilerarg value="-Xlint:all" />
+      <compilerarg value="-Werror" />
+    </javac>
+  </target>
+
+  <target name="clean" description="Delete build/ directory.">
+    <delete dir="${build.dir}" />
+  </target>
+
+  <target name="convertLineEndings"
+          description="Makes *.build.xml line endings compatible with host platform.">
+    <fixcrlf srcdir="${basedir}" includes="*.build.xml" />
+  </target>
+
+  
+  <target name="jar" depends="compile" 
+     description="Create webspider.jar">
+     <!-- Define the directories and distribution name -->
+     <mkdir dir="${tmp.dir}" />
+     <copy todir="${tmp.dir}">
+       <fileset dir="${basedir}/build/classes"/>
+     </copy>
+   
+     <!-- Expand libraries into jar location --> 
+     <unjar src="${env.HTTPUNIT_HOME}/jars/js.jar" dest="${tmp.dir}"/>
+     <unjar src="${env.HTTPUNIT_HOME}/jars/nekohtml.jar" dest="${tmp.dir}"/>
+     <unjar src="${env.HTTPUNIT_HOME}/jars/xercesImpl.jar" dest="${tmp.dir}"/>
+     <unjar src="${env.HTTPUNIT_HOME}/jars/xmlParserAPIs.jar" dest="${tmp.dir}"/>
+     <unjar src="${env.HTTPUNIT_HOME}/lib/httpunit.jar" dest="${tmp.dir}"/>
+  
+     <jar destfile="${basedir}/webspider-jlam1.jar" basedir="${tmp.dir}">
+       <manifest>
+         <attribute name="Main-Class" value="edu.hawaii.webspider.WebSpiderExample"/>
+         <attribute name="Implementation-Title" value="WebSpider"/>
+         <attribute name="Implementation-Version" value="${version}"/>
+         <attribute name="Implementation-Vendor" value="Collaborative Software Development Laboratory, University of Hawaii"/>
+       </manifest>
+     </jar>
+     <delete dir="${tmp.dir}" />
+   </target>   
+
+  <target name="run"
+          depends="compile"
+          description="Runs the WebSpider main class.">
+    <java classname="edu.hawaii.webspider.WebSpiderExample">
+      <classpath>
+        <pathelement location="${build.dir}/classes" />
+        <path refid="compile.classpath" />
+      </classpath>
+    </java>
+  </target>
+</project>
+
+
+
